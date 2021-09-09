@@ -1,7 +1,7 @@
 import asyncio
 # import mcpi.minecraft as minecraft
 
-import symbols as letters
+import symbols
 
 
 async def main():
@@ -44,17 +44,19 @@ class RunningLine:
         for letter in text:
             letter = letter.lower()
             # проверяем, все ли буквы есть в алфавите
-            assert letter in letters.ALPHABET, f"Символа '{letter}' нет в словаре доступных символов"
+            assert letter in symbols.ALPHABET, f"Символа '{letter}' нет в словаре доступных символов"
 
             pixel_of_letter = self._convert_letter_to_size(letter)
 
             for lt in pixel_of_letter:
                 self.pixels_of_text.append(lt)
-            self.pixels_of_text.append(letters.ALPHABET.get(" ")[0])  # пробел между буквами
+            self.pixels_of_text.append(symbols.ALPHABET.get(" ")[0])  # пробел между буквами
+
+        self._width_of_text = len(self.pixels_of_text) # запоминаем ширину теста в пикселях
 
     def _convert_letter_to_size(self, letter):
         pixel_of_letter = []
-        instruction = letters.ALPHABET.get(letter)
+        instruction = symbols.ALPHABET.get(letter)
         width_ins = instruction['width'].split(' ')
 
         if width_ins[0] == '-':
@@ -93,6 +95,10 @@ class QTRunningLine(RunningLine):
 
         self.symbol_place = "|"
         self.symbol_back = "."
+
+        self.first_column = 0
+        self.width_text = 1
+
         self.board = []
 
     def update_board(self):
@@ -105,13 +111,27 @@ class QTRunningLine(RunningLine):
         else:
             return self.symbol_back
 
-    def change_row_with_column(self, first_column, width_text):
-        pt = self.pixels_of_text[first_column:width_text]
+    def change_row_with_column(self):
+        pt = self.pixels_of_text[self.first_column:self.width_text]
+
+        if self.width_text >= self.width:
+            self.first_column += 1
+
+        # добавляем последнюю строку в область видимости
+        self.width_text += 1
+
+        if self.width_text >= len(self.pixels_of_text):
+            # добавляем в конец пробел
+            self.pixels_of_text.append(symbols.ALPHABET.get(" ")[0])
+
+        if self.width_text > self._width_of_text + abs(self.width):  # даем тексту уйти с поля видимости и
+            # обновляем
+            self.first_column, self.width_text = 0, 1
+            self.set_text(self.text)
 
         # проходим по списку пикселей, ограниченных толькой той областью, которую нужно показывать
         for n_column, column in enumerate(pt):
             for n_row, block in enumerate(column):
-
                 # задаем показываемый символ
                 symbol = self._what_symbol_place(block)
 
