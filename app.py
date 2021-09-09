@@ -85,4 +85,4 @@ sys.excepthook = excepthook
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    App(50, 5)
+    App(50, 7)

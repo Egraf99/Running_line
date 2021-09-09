@@ -5,10 +5,11 @@ import symbols
 
 
 async def main():
-    # task1 = asyncio.create_task(print_nums())
-    task2 = asyncio.create_task(start_running_text_in_mc())
+    pass
+    # task1 = asyncio.create_task(app.App(50, 6))
+    # task2 = asyncio.create_task(start_running_text_in_mc())
 
-    await asyncio.gather(task2)
+    # await asyncio.gather(task1)
 
 
 async def print_nums():
@@ -50,38 +51,46 @@ class RunningLine:
 
             for lt in pixel_of_letter:
                 self.pixels_of_text.append(lt)
-            self.pixels_of_text.append(symbols.ALPHABET.get(" ")[0])  # пробел между буквами
 
-        self._width_of_text = len(self.pixels_of_text) # запоминаем ширину теста в пикселях
+            self.add_whitespace()
+
+        self._width_of_text = len(self.pixels_of_text)  # запоминаем ширину теста в пикселях
+
+    def add_whitespace(self):
+        whitespace = self._convert_letter_to_size(" ")
+        self.pixels_of_text.append(whitespace[0])
 
     def _convert_letter_to_size(self, letter):
         pixel_of_letter = []
         instruction = symbols.ALPHABET.get(letter)
         width_ins = instruction['width'].split(' ')
 
-        if width_ins[0] == '-':
-            width_letter = self.height - int(width_ins[1])
-        elif width_ins[0] == '*':
-            width_letter = self.height * int(width_ins[1])
+        width_letter = int(width_ins[0])
+
+        if width_ins[1] == '-':
+            width_letter = self.height - width_letter
+        elif width_ins[1] == '*':
+            width_letter = self.height * width_letter
 
         edge_ins = instruction['edge'].split(' ')
+
         center_ins = instruction['center'].split(' ')
 
         for w in range(width_letter):
             pixel_of_letter.append([])
             if w == 0 or w == width_letter - 1:
-                if edge_ins[0] == '*':
+                if edge_ins[1] == '*':
                     for _ in range(self.height):
-                        pixel_of_letter[w].append(1)
+                        pixel_of_letter[w].append(int(edge_ins[0]))
                 else:
-                    pass
+                    continue
 
             else:
-                if center_ins[0] == '*':
-                    pass
-                elif center_ins[0] == '//':
+                if center_ins[1] == '*':
+                    continue
+                elif center_ins[1] == '//':
                     for h in range(self.height):
-                        if h == self.height // int(center_ins[1]):
+                        if h == self.height // int(center_ins[0]):
                             pixel_of_letter[w].append(1)
                         else:
                             pixel_of_letter[w].append(0)
@@ -122,7 +131,7 @@ class QTRunningLine(RunningLine):
 
         if self.width_text >= len(self.pixels_of_text):
             # добавляем в конец пробел
-            self.pixels_of_text.append(symbols.ALPHABET.get(" ")[0])
+            self.add_whitespace()
 
         if self.width_text > self._width_of_text + abs(self.width):  # даем тексту уйти с поля видимости и
             # обновляем
