@@ -1,5 +1,7 @@
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QVBoxLayout, QLabel
 from PyQt5.QtCore import QTimer
+
+import symbols
 from running_text import QTRunningLine
 import sys
 
@@ -12,7 +14,7 @@ class App:
         self.window.setWindowTitle('Бегущая строка')
 
         self.timer = QTimer()
-        self.counter = 0
+        self.timeout = 100
         self.first_column = 0
         self.width_text = 1
 
@@ -53,26 +55,29 @@ class App:
             self.layout.addWidget(label)
 
     def start(self):
-        self.timer.start(500)
+        self.timer.start(self.timeout)
         self.timer.timeout.connect(self.move)
 
     def move(self):
-
         self.run_line.change_row_with_column(self.first_column, self.width_text)
 
         for n, qlabel in enumerate(self.list_of_qlabels):
             qlabel.setText(self.run_line.board[n])
 
-        if self.width_text >= self.width:  # текст дошел до начала показываемой области
-            # убираем первую строку за область видимости
+        if self.width_text >= self.width:
             self.first_column += 1
 
         # добавляем последнюю строку в область видимости
         self.width_text += 1
 
-        if self.width_text > len(self.run_line.pixels_of_text) + abs(self.width):  # даем тексту уйти с поля видимости и
+        if self.width_text > len(self.run_line.pixels_of_text):
+            # в каждой строке добавляем первый символ в конец
+            self.run_line.pixels_of_text.append(symbols.ALPHABET.get(" ")[0])
+
+        if self.width_text > len(self.run_line.text) * 4 + abs(self.width):  # даем тексту уйти с поля видимости и
             # обновляем
-            first_column, width_text = 0, 0
+            self.first_column, self.width_text = 0, 1
+            self.run_line.set_text(self.run_line.text)
 
     def stop(self):
         self.timer.stop()
@@ -89,4 +94,4 @@ sys.excepthook = excepthook
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    App(100, 5)
+    App(50, 5)

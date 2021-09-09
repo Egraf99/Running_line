@@ -1,5 +1,5 @@
 import asyncio
-import mcpi.minecraft as minecraft
+# import mcpi.minecraft as minecraft
 
 import symbols as letters
 
@@ -37,6 +37,7 @@ class RunningLine:
 
     def set_text(self, text: str) -> None:
         # обновляем список пикселей
+        self.text = text
         self.pixels_of_text = []
 
         # добавляем нужные пиксели букв в общий список
@@ -63,7 +64,6 @@ class RunningLine:
 
         edge_ins = instruction['edge'].split(' ')
         center_ins = instruction['center'].split(' ')
-        width_without_edge = width_letter - 2
 
         for w in range(width_letter):
             pixel_of_letter.append([])
@@ -92,7 +92,7 @@ class QTRunningLine(RunningLine):
         super().__init__(width, height)
 
         self.symbol_place = "|"
-        self.symbol_back = "-"
+        self.symbol_back = "."
         self.board = []
 
     def update_board(self):
@@ -106,26 +106,18 @@ class QTRunningLine(RunningLine):
             return self.symbol_back
 
     def change_row_with_column(self, first_column, width_text):
-        print(self.board)
+        pt = self.pixels_of_text[first_column:width_text]
+
         # проходим по списку пикселей, ограниченных толькой той областью, которую нужно показывать
-        for n_column, column in enumerate(self.pixels_of_text[first_column:width_text]):
+        for n_column, column in enumerate(pt):
             for n_row, block in enumerate(column):
 
+                # задаем показываемый символ
                 symbol = self._what_symbol_place(block)
 
-                self.board[n_row] = self.board[n_row][:n_column] + symbol + self.board[n_row][n_column + 1:]
-
-        print(self.board)
-        if width_text >= self.width:  # текст дошел до начала показываемой области
-            # убираем первую строку за область видимости
-            first_column += 1
-
-        # добавляем последнюю строку в область видимости
-        width_text += 1
-
-        if width_text > len(self.pixels_of_text) + abs(self.width):  # даем тексту уйти с поля видимости и
-            # обновляем
-            first_column, width_text = 0, 0
+                # и устанавливаем на необходимое место
+                place = self.width - len(pt) + n_column
+                self.board[n_row] = self.board[n_row][:place] + symbol + self.board[n_row][place + 1:]
 
 
 class MCRunningLine(RunningLine):
