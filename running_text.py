@@ -89,11 +89,16 @@ class RunningLine:
         pixels_column = []
 
         for h in range(self.height):
-            if ins[1][n] == 10:
+            if ins[1][n] == 'all':
                 pixels_column.append(ins[0][n])
 
-            elif h == int((ins[1][n] * self.height)):
-                pixels_column.append(ins[0][n])
+            elif ins[1][n] == 'half':
+                print(h, (self.height // 2))
+                if h == (self.height // 2):
+                    pixels_column.append(ins[0][n])
+
+                else:
+                    pixels_column.append(0)
 
             else:
                 pixels_column.append(0)
