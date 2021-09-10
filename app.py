@@ -42,7 +42,7 @@ class App:
         sys.exit(app.exec_())
 
     def init_run_line(self):
-        self.run_line = QTRunningLine(self.width, self.height)
+        self.run_line = QTRunningLine(self.width, self.height, 3)
         self.run_line.update_board()
         self.run_line.set_text('нннннн')
 

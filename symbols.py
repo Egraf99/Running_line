@@ -1,8 +1,21 @@
-ALPHABET = {' ': {'width': '1 ', 'edge': '0 *', 'center': 'no ne'},
+ID_SYMBOLS = {0: '.',
+              1: '|',
+              2: '-', }
+
+# in instruction
+#   first number: percent of all width * 10
+#   second number: id added symbols
+#   third number: percent of all height * 10
+#   fourth number: offset if there are several columns
+#   next numbers: second - fourth instruction for others symbols
+#   ; - separation between columns
+
+ALPHABET = {' ': {'w_from_h': '1 ', 'instruction': [[1], [0], [10], [0, 0, 0]],
+                  'edge': '0 *', 'center': 'no ne'},
 
             '!': [[1, 1, 1, 0, 1]],
             ',': [[0, 0, 0, 0, 0, 1], [0, 0, 0, 0, 1, 0]],
-            '-': [[0, 0, 1, 0, 0], [0, 0, 1, 0, 0]],
+            '-': {'width': '3 -', 'edge': '2 //', 'center': '2 //'},
 
             'а': [[0, 1, 1, 1, 1], [1, 0, 1, 0, 0], [0, 1, 1, 1, 1]],
             'б': [[1, 1, 1, 1, 1], [1, 0, 1, 0, 1], [1, 0, 1, 1, 1]],
@@ -15,7 +28,10 @@ ALPHABET = {' ': {'width': '1 ', 'edge': '0 *', 'center': 'no ne'},
             'л': [[0, 0, 0, 0, 1], [0, 1, 1, 1, 0], [1, 0, 0, 0, 0], [1, 1, 1, 1, 1]],
             'м': [[1, 1, 1, 1, 1], [0, 1, 0, 0, 0], [0, 0, 1, 0, 0], [0, 1, 0, 0, 0], [1, 1, 1, 1, 1]],
 
-            'н': {'width': '2 -', 'edge': '1 *', 'center': '2 //'},
+            'н': {'w_from_h': '- 2',
+                  'instruction': [[0.2, 0.6, 0.2], [1, 2, 1], [10, 0.5, 10], [0, 0, 0]]},
+            # '2,5 1 10- 0;5 2 5- 0;2,5 1 10- 0'},
+            # 'н': {'width': '2 -', 'edge': '1 *', 'center': '2 //'},
 
             'о': [[1, 1, 1, 1, 1], [1, 0, 0, 0, 1], [1, 1, 1, 1, 1]],
             'п': [[1, 1, 1, 1, 1], [1, 0, 0, 0, 0], [1, 1, 1, 1, 1]],

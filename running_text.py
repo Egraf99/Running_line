@@ -1,4 +1,5 @@
 import asyncio
+import itertools
 # import mcpi.minecraft as minecraft
 
 import symbols
@@ -30,9 +31,10 @@ async def start_running_text_in_mc():
 
 
 class RunningLine:
-    def __init__(self, width, height):
+    def __init__(self, width, height, indent):
         self.width = width
         self.height = height
+        self.indent = indent
 
         self.pixels_of_text = []
 
@@ -47,60 +49,83 @@ class RunningLine:
             # проверяем, все ли буквы есть в алфавите
             assert letter in symbols.ALPHABET, f"Символа '{letter}' нет в словаре доступных символов"
 
+            # подстраисваем под размер
             pixel_of_letter = self._convert_letter_to_size(letter)
 
             for lt in pixel_of_letter:
                 self.pixels_of_text.append(lt)
 
-            self.add_whitespace()
+            self.add_whitespace(self.indent)
 
         self._width_of_text = len(self.pixels_of_text)  # запоминаем ширину теста в пикселях
 
-    def add_whitespace(self):
-        whitespace = self._convert_letter_to_size(" ")
-        self.pixels_of_text.append(whitespace[0])
+    def add_whitespace(self, count):
+        for _ in range(count):
+            # добавление пикселей пробела
+            whitespace = self._convert_letter_to_size(" ")
+            self.pixels_of_text.append(whitespace[0])
 
-    def _convert_letter_to_size(self, letter):
-        pixel_of_letter = []
-        instruction = symbols.ALPHABET.get(letter)
-        width_ins = instruction['width'].split(' ')
+    def _read_ins(self, instruction):
+        pass
 
-        width_letter = int(width_ins[0])
+    def _get_pixels_from_instruction(self, width, ins):
+        # через пропорцию от ширины определяем, сколько столбцов занимает отдельная интсрукция столбца
+        proportion = list(map(int, map(lambda x: x * width, ins[0])))
+        proportion = list(itertools.accumulate(proportion))
 
-        if width_ins[1] == '-':
-            width_letter = self.height - width_letter
-        elif width_ins[1] == '*':
-            width_letter = self.height * width_letter
+        pixel_of_text = []
 
-        edge_ins = instruction['edge'].split(' ')
+        _i = []
+        for n, limit in enumerate(proportion):
 
-        center_ins = instruction['center'].split(' ')
+            for i in range(limit):
+                if i not in _i:
+                    _i.append(i)
+                    pixel_of_text.append(self._place_pixel(ins[1:], n))
 
-        for w in range(width_letter):
-            pixel_of_letter.append([])
-            if w == 0 or w == width_letter - 1:
-                if edge_ins[1] == '*':
-                    for _ in range(self.height):
-                        pixel_of_letter[w].append(int(edge_ins[0]))
-                else:
-                    continue
+        return pixel_of_text
+
+    def _place_pixel(self, ins, n):
+        pixels_column = []
+
+        for h in range(self.height):
+            if ins[1][n] == 10:
+                pixels_column.append(ins[0][n])
+
+            elif h == int((ins[1][n] * self.height)):
+                pixels_column.append(ins[0][n])
 
             else:
-                if center_ins[1] == '*':
-                    continue
-                elif center_ins[1] == '//':
-                    for h in range(self.height):
-                        if h == self.height // int(center_ins[0]):
-                            pixel_of_letter[w].append(1)
-                        else:
-                            pixel_of_letter[w].append(0)
+                pixels_column.append(0)
 
-        return pixel_of_letter
+        return pixels_column
+
+    def _return_width_from_height(self, instruction) -> int:
+        if instruction[0] == '-':
+            width_letter = self.height - int(instruction[1])
+
+        elif instruction[0].isdigit():
+            width_letter = instruction[0]
+
+        return width_letter
+
+    def _convert_letter_to_size(self, letter):
+        instruction = symbols.ALPHABET.get(letter)
+
+        width_ins = instruction['w_from_h'].split(' ')
+
+        width_letter = self._return_width_from_height(width_ins)
+
+        letter_instruction = instruction['instruction']
+
+        pixels_of_text = self._get_pixels_from_instruction(width_letter, letter_instruction)
+
+        return pixels_of_text
 
 
 class QTRunningLine(RunningLine):
-    def __init__(self, width, height):
-        super().__init__(width, height)
+    def __init__(self, width, height, indent):
+        super().__init__(width, height, indent)
 
         self.symbol_place = "|"
         self.symbol_back = "."
@@ -115,10 +140,7 @@ class QTRunningLine(RunningLine):
             self.board.append(self.symbol_back * self.width)
 
     def _what_symbol_place(self, place):
-        if place:
-            return self.symbol_place
-        else:
-            return self.symbol_back
+        return symbols.ID_SYMBOLS[place]
 
     def change_row_with_column(self):
         pt = self.pixels_of_text[self.first_column:self.width_text]
@@ -131,7 +153,7 @@ class QTRunningLine(RunningLine):
 
         if self.width_text >= len(self.pixels_of_text):
             # добавляем в конец пробел
-            self.add_whitespace()
+            self.add_whitespace(self.indent)
 
         if self.width_text > self._width_of_text + abs(self.width):  # даем тексту уйти с поля видимости и
             # обновляем
@@ -150,7 +172,8 @@ class QTRunningLine(RunningLine):
 
 
 class MCRunningLine(RunningLine):
-    def __init__(self, right_x, up_y, right_z, coord_width_height: tuple, pause: float = 0.5):
+    def __init__(self, right_x, up_y, right_z, coord_width_height: tuple, pause: float = 0.5, indent=1):
+        self.indent = indent
 
         self.craft = minecraft.Minecraft.create()
 
@@ -159,7 +182,7 @@ class MCRunningLine(RunningLine):
         self._width = coord_width_height[1]
         self._height = coord_width_height[2]
 
-        super().__init__(abs(self._width), abs(self._height))
+        super().__init__(abs(self._width), abs(self._height), self.indent)
 
         self.pause = pause
 
@@ -196,7 +219,7 @@ class MCRunningLine(RunningLine):
                 self._set_block((width,), height, self.color_back_block)
 
     def _what_block_place(self, block):
-        if block:  # пиксель буквы
+        if block != 0:  # пиксель буквы
             block_color = self.color_letter_block
         else:  # пустой пиксель
             block_color = self.color_back_block
