@@ -129,9 +129,7 @@ ID_SYMBOLS = {0: '.',
               1: '|',
               2: '-',
               3: '/',
-              4: '\\',
-              5: '~',
-              6: '{'}
+              4: '\\'}
 
 INSTRUCT = {'all': all_fill,
             'all_fill_except_first': all_fill_except_first,
