@@ -73,56 +73,59 @@ class RunningLine:
         proportion = list(map(int, map(lambda x: x * width, ins[0])))
         proportion = list(itertools.accumulate(proportion))
 
-        pixel_of_text = []
+        pixels_of_text = []
 
         _i = []
         for n, limit in enumerate(proportion):
-
+            column_in_order = 0
             for i in range(limit):
                 if i not in _i:
+                    column_in_order += 1
                     _i.append(i)
-                    pixel_of_text.append(self._place_pixel(ins[1:], n))
+                    column_pixels = self._place_pixel(ins[1:], n, column_in_order)
+                    if column_pixels:
+                        pixels_of_text.append(column_pixels)
 
-        return pixel_of_text
+        return pixels_of_text
 
-    def _place_pixel(self, ins, n):
+    def _place_pixel(self, ins, n, order_column):
+        # ins[0] - id символа
+        # ins[1] - имя ключа для выполняемой функции
+
         pixels_column = []
 
-        for h in range(self.height):
-            if ins[1][n] == 'all':
-                pixels_column.append(ins[0][n])
+        # добавляем id символа по инструкции, если она есть
+        if symbols.INSTRUCT[ins[1][n]]:
+            symbols.INSTRUCT[ins[1][n]](pixels_column, self.height, ins[0][n], order_column)
 
-            elif ins[1][n] == 'half':
-                if h == (self.height // 2):
-                    pixels_column.append(ins[0][n])
-
-                else:
-                    pixels_column.append(0)
-
-            else:
+        # если нет, добавляем id символа-пробела
+        else:
+            for h in range(self.height):
                 pixels_column.append(0)
 
         return pixels_column
 
     def _return_width_from_height(self, instruction) -> int:
+        width_letter = 0
+
         if instruction[0] == '-':
             width_letter = self.height - int(instruction[1])
 
         elif instruction[0].isdigit():
-            width_letter = instruction[0]
+            width_letter = self.height * int(instruction[0])
 
         return width_letter
 
     def _convert_letter_to_size(self, letter):
         instruction = symbols.ALPHABET.get(letter)
 
-        width_ins = instruction['w_from_h'].split(' ')
+        # если что-то пойдет не так с размерами букв, верни
+        # width_ins = instruction['w_from_h'].split(' ')
+        # width_letter = self._return_width_from_height(width_ins)
 
-        width_letter = self._return_width_from_height(width_ins)
+        # letter_instruction = instruction['instruction']
 
-        letter_instruction = instruction['instruction']
-
-        pixels_of_text = self._get_pixels_from_instruction(width_letter, letter_instruction)
+        pixels_of_text = self._get_pixels_from_instruction(self.height, instruction)
 
         return pixels_of_text
 
