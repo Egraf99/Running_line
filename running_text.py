@@ -93,7 +93,6 @@ class RunningLine:
                 pixels_column.append(ins[0][n])
 
             elif ins[1][n] == 'half':
-                print(h, (self.height // 2))
                 if h == (self.height // 2):
                     pixels_column.append(ins[0][n])
 
