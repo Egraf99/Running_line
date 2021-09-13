@@ -59,9 +59,7 @@ def t_center(pix_column: list, height: int, symbol_id, order_col) -> list:
 
 
 def from_up_and_bottom_to_center(pix_column: list, height: int, symbol_id, order_col) -> list:
-    print('fupabottocen')
-    print(order_col, (height // 2))
-    if order_col > (height // 2):
+    if height > order_col > (height // 2):
         for h in range(height):
             if h == ((height // 2) - (height - order_col)):
                 pix_column.append(symbol_id[0])
@@ -73,8 +71,6 @@ def from_up_and_bottom_to_center(pix_column: list, height: int, symbol_id, order
 
 
 def from_center_to_up_and_bottom(pix_column: list, height: int, symbol_id, order_col) -> list:
-    print('fcenttoupandb')
-    print(height - order_col, (height // 2))
     if height - order_col > (height // 2):
         for h in range(height):
             if h == ((height // 2) - order_col):
@@ -87,7 +83,6 @@ def from_center_to_up_and_bottom(pix_column: list, height: int, symbol_id, order
 
 
 def up_and_bottom(pix_column: list, height: int, symbol_id, order_col) -> list:
-    print('upandbot')
     for h in range(height):
         if h == 0:
             pix_column.append(symbol_id)
@@ -140,7 +135,7 @@ ALPHABET = {' ': [[1], [0], ['all']],
 
             'н': [[0.2, 2, 0.2], [1, 2, 1], ['all', 'center', 'all']],
             #
-            'о': [[0.2, 0.8, 0.6, 0.8, 0.2], [1, [3, 4], 2, [4, 3], 1],
+            'о': [[0.2, 1, 0.6, 1, 0.2], [1, [3, 4], 2, [4, 3], 1],
                   ['center', 'from_center_to_up_and_bottom', 'up_and_bottom', 'from_up_and_bottom_to_center',
                    'center']],
             'п': [[0.2, 2, 0.2], [1, 2, 1], ['all', 'up', 'all']],

@@ -71,8 +71,10 @@ class RunningLine:
     def _get_pixels_from_instruction(self, width, ins):
         # через пропорцию от ширины определяем, сколько столбцов занимает отдельная интсрукция столбца
         proportion = list(map(int, map(lambda x: x * width, ins[0])))
+        print(proportion)
         proportion = list(itertools.accumulate(proportion))
-
+        print(proportion)
+        print()
         pixels_of_text = []
 
         _i = []
