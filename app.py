@@ -44,7 +44,7 @@ class App:
     def init_run_line(self):
         self.run_line = QTRunningLine(self.width, self.height, 3)
         self.run_line.update_board()
-        self.run_line.set_text('скухотгпн')
+        self.run_line.set_text('рлас,-кухотгпн')
 
     def made_display(self):
         for string in self.run_line.board:
@@ -85,4 +85,4 @@ sys.excepthook = excepthook
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    App(50, 5)
+    App(50, 9)
