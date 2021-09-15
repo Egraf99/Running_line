@@ -1,10 +1,10 @@
-def all_fill(pix_column: list, height: int, symbol_id, order_col) -> list:
+def all_place(pix_column: list, height: int, symbol_id, order_col) -> list:
     for h in range(height):
         pix_column.append(symbol_id)
     return pix_column
 
 
-def all_fill_except_first(pix_column: list, height: int, symbol_id, order_col) -> list:
+def all_except_first(pix_column: list, height: int, symbol_id, order_col) -> list:
     for h in range(height):
         if h == 0:
             pix_column.append(symbol_id[0])
@@ -13,7 +13,7 @@ def all_fill_except_first(pix_column: list, height: int, symbol_id, order_col) -
     return pix_column
 
 
-def all_fill_except_last(pix_column: list, height: int, symbol_id, order_col) -> list:
+def all_except_last(pix_column: list, height: int, symbol_id, order_col) -> list:
     for h in range(height):
         if h == height - 1:
             pix_column.append(symbol_id[0])
@@ -22,7 +22,7 @@ def all_fill_except_last(pix_column: list, height: int, symbol_id, order_col) ->
     return pix_column
 
 
-def all_fill_except_first_and_last(pix_column: list, height: int, symbol_id, order_col) -> list:
+def all_except_first_and_last(pix_column: list, height: int, symbol_id, order_col) -> list:
     for h in range(height):
         if h == 0:
             pix_column.append(symbol_id[0])
@@ -42,7 +42,7 @@ def up_place(pix_column: list, height: int, symbol_id, order_col) -> list:
     return pix_column
 
 
-def bottom_place(pix_column: list, height: int, symbol_id, order_col) -> list:
+def bottom(pix_column: list, height: int, symbol_id, order_col) -> list:
     for h in range(height):
         if h == height - 1:
             pix_column.append(symbol_id)
@@ -51,16 +51,16 @@ def bottom_place(pix_column: list, height: int, symbol_id, order_col) -> list:
     return pix_column
 
 
-def bottom_minus_one(pix_column: list, height: int, symbol_id, order_col) -> list:
+def penultimate(pix_column: list, height: int, symbol_id, order_col) -> list:
     for h in range(height):
-        if h > height - height // 3 and h != height - 1:
+        if h == height - height // 3 and h != height - 1:
             pix_column.append(symbol_id)
         else:
             pix_column.append(0)
     return pix_column
 
 
-def center_place(pix_column: list, height: int, symbol_id, order_col) -> list:
+def center(pix_column: list, height: int, symbol_id, order_col) -> list:
     for h in range(height):
         if h == (height // 2):
             pix_column.append(symbol_id)
@@ -82,6 +82,28 @@ def from_bottom_to_up(pix_column: list, height: int, symbol_id, order_col) -> li
     for h in range(height):
         if h == (height - order_col):
             pix_column.append(symbol_id)
+        else:
+            pix_column.append(0)
+    return pix_column
+
+
+def from_bottom_to_up_and_penultimate_without_bottom(pix_column: list, height: int, symbol_id, order_col) -> list:
+    for h in range(height):
+        if h == (height - order_col) and h < height - height // 3:
+            pix_column.append(symbol_id[0])
+        elif h == height - height // 3 and h != height - 1:
+            pix_column.append(symbol_id[1])
+        else:
+            pix_column.append(0)
+    return pix_column
+
+
+def from_up_to_bottom_and_penultimate_without_bottom(pix_column: list, height: int, symbol_id, order_col) -> list:
+    for h in range(height):
+        if h == order_col - 1 and h < height - height // 3:
+            pix_column.append(symbol_id[0])
+        elif h == height - height // 3 and h != height - 1:
+            pix_column.append(symbol_id[1])
         else:
             pix_column.append(0)
     return pix_column
@@ -196,11 +218,8 @@ def from_up_and_center_to_third_and_three_quarters(pix_column: list, height: int
             if h >= height // 2:
                 print('<')
                 if h == (height // 2 + order_col - 1):
-                    # print(h, order_col)
                     pix_column.append(symbol_id[0])
                 elif h == (height - order_col):
-                    # print('/')
-                    # print(h, order_col)
                     pix_column.append(symbol_id[1])
                 else:
                     pix_column.append(0)
@@ -278,6 +297,46 @@ def bottom_and_center(pix_column: list, height: int, symbol_id, order_col) -> li
     return pix_column
 
 
+def exclamation_mark(pix_column: list, height: int, symbol_id, order_col) -> list:
+    for h in range(height):
+        if h <= height // 2 or h == height - 1:
+            pix_column.append(symbol_id)
+        else:
+            pix_column.append(0)
+    return pix_column
+
+
+def up_to_center(pix_column: list, height: int, symbol_id, order_col) -> list:
+    for h in range(height):
+        if h < height // 2:
+            pix_column.append(symbol_id[0])
+        elif h == height // 2:
+            pix_column.append(symbol_id[1])
+        else:
+            pix_column.append(0)
+    return pix_column
+
+
+def up_and_penultimate(pix_column: list, height: int, symbol_id, order_col) -> list:
+    for h in range(height):
+        if h == 0 or h == height - height // 3 and h != height - 1:
+            pix_column.append(symbol_id)
+        else:
+            pix_column.append(0)
+    return pix_column
+
+
+def penultimate_and_bottom(pix_column: list, height: int, symbol_id, order_col) -> list:
+    for h in range(height):
+        if h == height - height // 3 and h != height - 1:
+            pix_column.append(symbol_id[0])
+        elif h > height - height // 3:
+            pix_column.append(symbol_id[1])
+        else:
+            pix_column.append(0)
+    return pix_column
+
+
 ID_SYMBOLS = {0: '.',
               1: '|',
               2: '-',
@@ -285,19 +344,24 @@ ID_SYMBOLS = {0: '.',
               4: '\\',
               5: 'к'}
 
-INSTRUCT = {'all': all_fill,
-            'all_fill_except_first': all_fill_except_first,
-            'all_fill_except_last': all_fill_except_last,
-            'all_fill_except_first_and_last': all_fill_except_first_and_last,
-            'center': center_place,
+INSTRUCT = {'all': all_place,
+            'all_fill_except_first': all_except_first,
+            'all_fill_except_last': all_except_last,
+            'all_fill_except_first_and_last': all_except_first_and_last,
+            'center': center,
             'up': up_place,
             'up_and_bottom': up_and_bottom,
             'up_and_center': up_and_center,
+            'up_to_center': up_to_center,
             'up_center_bottom': up_center_bottom,
+            'up_and_penultimate': up_and_penultimate,
             'bottom_and_center': bottom_and_center,
-            'bottom': bottom_place,
-            'bottom_minus_one': bottom_minus_one,
+            'bottom': bottom,
+            'penultimate': penultimate,
+            'penultimate_and_bottom': penultimate_and_bottom,
             'from_bottom_to_up': from_bottom_to_up,
+            'from_bottom_to_up_and_penultimate_without_bottom': from_bottom_to_up_and_penultimate_without_bottom,
+            'from_up_to_bottom_and_penultimate_without_bottom': from_up_to_bottom_and_penultimate_without_bottom,
             'from_up_to_bottom': from_up_to_bottom,
             'from_bottom_to_up_with_center': from_bottom_to_up_with_center,
             'from_up_to_bottom_with_center': from_up_to_bottom_with_center,
@@ -309,18 +373,18 @@ INSTRUCT = {'all': all_fill,
             'from_up_and_bottom_to_center_except_center': from_up_and_bottom_to_center_except_center,
             'from_up_to_center': from_up_to_center,
             'from_center_to_up': from_center_to_up,
+            'exclamation_mark': exclamation_mark,
             }
 
-# in instruction
 #   first list: percent of all width
 #   second list: id added symbols
 #   third list: instruction added symbols
 
 ALPHABET = {' ': [[1], [0], ['all']],
 
-            '!': [[1, 1, 1, 0, 1]],  # !!!
+            '!': [[0.2], [1], ['exclamation_mark']],
 
-            ',': [[0.2, 0.2], [3, 1], ['bottom', 'bottom_minus_one']],
+            ',': [[0.2], [3], ['bottom']],
             '-': [[1], [2], ['center']],
 
             'а': [[1, 0.2, 1], [[3, 2], 2, [4, 2]],
@@ -329,8 +393,10 @@ ALPHABET = {' ': [[1], [0], ['all']],
                   ['all_fill_except_first_and_last', 'up_center_bottom', 'from_up_and_center_to_three_quarters']],
             'в': [[0.2, 1, 1], [[3, 1], 2, [4, 3]],
                   ['all_fill_except_first', 'up_center_bottom', 'from_up_and_center_to_third_and_three_quarters']],
-            'г': [[0.2, 2], [[3, 1], 2], ['all_fill_except_first', 'up']],
-            'д': [[0, 0, 0, 1, 1], [1, 1, 1, 1, 0], [1, 1, 1, 1, 0], [0, 0, 0, 1, 1]],  # !!!
+            'г': [[0.2, 1], [[3, 1], 2], ['all_fill_except_first', 'up']],
+            'д': [[0.2, 1, 0.5, 1, 0.2], [[3, 1], [3, 2], 2, [4, 2], [4, 1]],
+                  ['penultimate_and_bottom', 'from_bottom_to_up_and_penultimate_without_bottom', 'up_and_penultimate',
+                   'from_up_to_bottom_and_penultimate_without_bottom', 'penultimate_and_bottom']],
             'е': [[0.2, 1], [[3, 4, 1], 2],
                   ['all_fill_except_first_and_last', 'up_center_bottom']],
 
@@ -364,7 +430,7 @@ ALPHABET = {' ': [[1], [0], ['all']],
             'х': [[1, 0.2, 1], [[4, 3], 1, [3, 4]],
                   ['from_up_and_bottom_to_center',
                    'center', 'from_center_to_up_and_bottom']],
-            'ч': [[1, 1, 1, 0, 0], [0, 0, 1, 0, 0], [1, 1, 1, 1, 1]],  # !!!
+            'ч': [[0.2, 1, 0.2], [[1, 4], 2, 1], ['up_to_center', 'center', 'all']],
             'ь': [[0.2, 1, 1], [[4, 1], 2, [4, 3]],
                   ['all_fill_except_last', 'bottom_and_center', 'from_up_and_center_to_three_quarters']],
             'я': [[0, 0, 0, 0, 1], [1, 1, 0, 1, 1], [1, 0, 1, 0, 0], [1, 1, 1, 1, 1]],  # !!!

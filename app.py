@@ -14,7 +14,7 @@ class App:
 
         self.timer = QTimer()
         self.check_move = False
-        self.timeout = 50
+        self.timeout = 15
         self.first_column = 0
         self.width_text = 1
 
@@ -44,7 +44,7 @@ class App:
     def init_run_line(self):
         self.run_line = QTRunningLine(self.width, self.height, 3)
         self.run_line.update_board()
-        self.run_line.set_text('вбемхкуьрлас,-отгпн')
+        self.run_line.set_text('дочка,  - бобер!')
 
     def made_display(self):
         for string in self.run_line.board:
@@ -85,4 +85,4 @@ sys.excepthook = excepthook
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    App(50, 7)
+    App(100, 7)
