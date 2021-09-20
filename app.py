@@ -44,7 +44,7 @@ class App:
     def init_run_line(self):
         self.run_line = QTRunningLine(self.width, self.height, 3)
         self.run_line.update_board()
-        self.run_line.set_text('Эй, цирюльникъ, ежик выстриги, да щетину ряхи сбрей, феном вошь за печь гони!?')
+        self.run_line.set_text('абвгдежзийклмнопрстуфхцчщьыъэюя')
 
     def made_display(self):
         for string in self.run_line.board:
